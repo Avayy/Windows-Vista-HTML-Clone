@@ -19,7 +19,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-image: url(vista.webp);
+    background-image: url(image/vista.webp);
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
@@ -166,7 +166,7 @@ body {
     top: 50px;
     cursor: default;
     overflow: hidden;
-    background-image: url('post-385423-0-61567900-1390053212.png'); 
+    background-image: url('image/post-385423-0-61567900-1390053212.png'); 
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
