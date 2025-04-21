@@ -1,6 +1,6 @@
-// ================================
+// =======================================================================================
 // 1. DOM Element References
-// ================================
+// =======================================================================================
 const windows = document.querySelectorAll('.window');
 const windowEl = windows[0]; // Keep reference to first window for backward compatibility
 const topbar = windowEl.querySelector('#topbar');
