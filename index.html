@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>frutiger areo</title>
+    <link rel="icon" href="image/earthorb.webp" type="image/webp">
+    <link rel="stylesheet" href="styl.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <audio id="background-music" loop>
+        <source src="frutigerareo.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="icons">
+    <div id="recycle-bin" class="desktop-icon">
+        <img src="image/Recycle_Bin_Windows_Vista_empty.webp" alt="Recycle Bin" />
+        <span>Recycle Bin</span>
+      </div>
+
+      <div id="frutiger-areo" class="desktop-icon">
+        <img src="image/earthorb.webp" alt="Frutiger Areo"/>
+        <span>Frutiger Areo</span>
+      </div>
+    </div> 
+
+    <div class="main">
+        <!-- Frutiger Areo Window -->
+        <div class="window" id="frutiger-areo-window">
+            <div id="topbar">
+                <div id="left">
+                    <img src="image/earthorb.webp"><p>Frutiger Areo</p>
+                </div>
+                <div class="buttons">
+                    <div class="border one">
+                        <button class="mini btn">
+                            <div id="mini_img"><img src="image/tab_min.png"></div> 
+                        </button>
+                    </div>
+                    <div class="border two">
+                        <button class="max btn">
+                            <div id="max_img"><img src="image/tab_max.png"></div>
+                        </button>
+                    </div>
+                    <div class="border three">
+                        <button class="close btn">
+                            <div id="close_img"><img src="image/tab_close.png"></div>  
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <!-- Content will be loaded from external HTML file -->
+            </div>
+            <div class="resizer"></div>
+        </div>
+
+        <!-- Recycle Bin Window -->
+        <div class="window" id="recycle-bin-window">
+            <div id="topbar">
+                <div id="left">
+                    <img src="image/Recycle_Bin_Windows_Vista_empty.webp"><p>Recycle bin</p>
+                </div>
+                <div class="buttons">
+                    <div class="border one">
+                        <button class="mini btn">
+                            <div id="mini_img"><img src="image/tab_min.png"></div> 
+                        </button>
+                    </div>
+                    <div class="border two">
+                        <button class="max btn">
+                            <div id="max_img"><img src="image/tab_max.png"></div>
+                        </button>
+                    </div>
+                    <div class="border three">
+                        <button class="close btn">
+                            <div id="close_img"><img src="image/tab_close.png"></div>  
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <!-- Content will be loaded from external HTML file -->
+            </div>
+            <div class="resizer"></div>
+        </div>
+    </div>
+
+<div id="start_menu" class="closed">
+
+  <div id="start_left">
+    <div id="start_programs">
+
+     <div id="s_program">
+        <img src="image/earthorb.webp"><p>Work In Progress</p>
+      </div>
+      <div id="s_program">
+        <img src="image/earthorb.webp"><p>Work In Progress</p>
+      </div>
+      <div id="s_program">
+        <img src="image/earthorb.webp"><p>Work In Progress</p>
+      </div>
+      <hr>
+      <div id="s_program">
+        <img src="image/earthorb.webp"><p>Work In Progress</p>
+      </div>
+      <div id="s_program">
+        <img src="image/github.svg"> <a href="https://github.com/Avayy/Windows-Vista-HTML-Clone-WIP" target="_blank"><p>Windows Vista HTML Clone</p></a>
+      </div>
+
+    </div>
+
+    <div id="start_search">
+      <input type="text" name="search" id="s_search" placeholder="Start search">
+    </div>
+  </div>
+
+  <div id="start_right">
+    <div id="start_icon">
+      <div id="s_border">
+      <img src="image/noavatar.png">
+    </div>
+    <img src="image/6a8aa24b667414cb8e8e6853afef7c98.jpg">
+    </div>
+
+    <div id="start_list">
+      <p>User</p>
+      <p>Documents</p>
+      <p>Pictures</p>
+      <p>Music</p>
+      <p>Games</p>
+      <hr>
+      <p>Recent Items</p>
+      <p>Computer</p>
+      <p>Network</p>
+      <p>Connect To</p>
+      <hr>
+      <p>Control Panel</p>
+      <p>Default Programs</p>
+      <p>Help and Support</p>
+    </div>
+
+    <div id="power_buttons">
+
+      <div class="border_s one_s">
+        <button class="power btn_s">
+           <div id="power">Power</div> 
+        </button>
+        </div>
+
+        <div class="border_s two_s">
+        <button class="logout btn_s">
+            <div id="logout">logout</div>
+        </button>
+        </div>
+
+        <div class="border_s three_s">
+        <button class="arrow btn_s">
+            <div id="arrow">></div>  
+        </button>
+        </div>
+
+    </div>
+  </div>
+
+</div>
+        <footer>
+                <img src="image/vista_start.png" id="vista_start">
+                <div id="mini">
+                </div>
+
+              <div id="t_programs">
+              </div>
+
+                <div id="clock" class="taskbar-clock"></div>
+        </footer>
+
+        <script src="script.js"></script>
+</body>
+</html>
