@@ -20,10 +20,10 @@ const vistaStart    = document.querySelector("#vista_start");
 const desktopIcons  = document.querySelectorAll(".desktop-icon");
 
 // Constants
-const GRID_WIDTH    = 100;
-const GRID_HEIGHT   = 100;
-const PADDING       = 20;
-const TASKBAR_HEIGHT = 40;
+const GRID_WIDTH    = 120;
+const GRID_HEIGHT   = 130;
+const PADDING       = 10;
+const TASKBAR_HEIGHT = 20;
 
 // Track Occupied Grid Positions
 const occupiedGridPositions = new Set();
@@ -36,8 +36,11 @@ function initMenu() {
 }
 
 function makeDraggable(el) {
+  let isDragging = false;
+  
   el.onmousedown = (e) => {
     if (e.button !== 0) return;
+    isDragging = true;
 
     let startX = Math.round((el.offsetLeft - PADDING) / GRID_WIDTH);
     let startY = Math.round((el.offsetTop - PADDING) / GRID_HEIGHT);
@@ -47,6 +50,8 @@ function makeDraggable(el) {
     const offsetY = e.clientY - el.getBoundingClientRect().top;
 
     const moveAt = (x, y) => {
+      if (!isDragging) return;
+      
       let left = x - offsetX;
       let top = y - offsetY;
 
@@ -59,11 +64,14 @@ function makeDraggable(el) {
 
     const onMouseMove = (e) => moveAt(e.pageX, e.pageY);
 
-    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener('mousemove', onMouseMove);
 
-    el.onmouseup = () => {
-      document.removeEventListener("mousemove", onMouseMove);
-      el.onmouseup = null;
+    const onMouseUp = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
 
       let x = el.offsetLeft;
       let y = el.offsetTop;
@@ -107,6 +115,8 @@ function makeDraggable(el) {
 
       occupiedGridPositions.add(`${gridX},${gridY}`);
     };
+
+    document.addEventListener('mouseup', onMouseUp);
   };
 
   el.ondragstart = () => false;
@@ -176,25 +186,38 @@ function updateTaskbarItemState(windowId, active) {
 function initDragDesktop() {
   desktopIcons.forEach((icon, i) => {
     icon.style.position = "absolute";
-    let left = 20;
-    let top = 20 + i * GRID_HEIGHT;
-
-    if (icon.id === "recycle-bin") top = 20;
-    else if (icon.id === "frutiger-areo") top = 120;
-    else {
-      left = parseInt(icon.style.left) || 20;
-      top = parseInt(icon.style.top) || 20;
+    
+    let column = 0;
+    let row = 0;
+    let found = false;
+    
+    while (!found) {
+      if (!occupiedGridPositions.has(`${column},${row}`)) {
+        const potentialTop = row * GRID_HEIGHT + PADDING;
+        const maxTop = window.innerHeight - TASKBAR_HEIGHT - GRID_HEIGHT - PADDING;
+        
+        if (potentialTop <= maxTop) {
+          found = true;
+          break;
+        }
+      }
+      
+      row++;
+      if (row >= Math.floor((window.innerHeight - TASKBAR_HEIGHT - PADDING) / GRID_HEIGHT)) {
+        row = 0;
+        column++;
+      }
     }
-
+    
+    const left = column * GRID_WIDTH + PADDING;
+    const top = row * GRID_HEIGHT + PADDING;
+    
     icon.style.left = `${left}px`;
     icon.style.top = `${top}px`;
-
-    const gridX = Math.round((left - PADDING) / GRID_WIDTH);
-    const gridY = Math.round((top - PADDING) / GRID_HEIGHT);
-    occupiedGridPositions.add(`${gridX},${gridY}`);
-
+    occupiedGridPositions.add(`${column},${row}`);
+    
     makeDraggable(icon);
-
+    
     icon.addEventListener("dblclick", () => {
       const winId = `${icon.id}-window`;
       const win = document.getElementById(winId);
