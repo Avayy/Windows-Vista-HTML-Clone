@@ -119,8 +119,8 @@ html, body, .main {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    width: 60%;
-    height: 80%;
+    width: 50%;
+    height: 70%;
     min-width: 250px;
     min-height: 200px;
     padding: 0 5px 2px 5px;
@@ -132,8 +132,8 @@ html, body, .main {
     border: 1px solid rgba(236,242,249,0.7);
     outline: rgba(28, 49, 39,0.5) solid 1px;
     position: absolute;
-    left: 300px;
-    top: 50px;
+    left: 20%;
+    top: 10%;
     cursor: default;
     overflow: hidden;
     background-image: url('image/post-385423-0-61567900-1390053212.png'); 
@@ -141,15 +141,7 @@ html, body, .main {
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: fixed; 
-}
-
-.window .resizer {
-    position: absolute;
-    width: 13px;
-    height: 13px;
-    right: 0;
-    bottom: 0;
-    cursor: se-resize;
+    resize: both;
 }
 
 /* ================================
