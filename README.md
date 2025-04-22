@@ -18,8 +18,9 @@ This project aims to replicate the **Windows Vista desktop environment**, comple
 
 For the best experience:
 
-- Open in **fullscreen mode**
-- Set browser zoom to **100%**
+1. Set browser zoom to **100%**.
+2. Open in **fullscreen mode**.
+3. **Refresh the page** to ensure proper layout and interaction.
 
 ## 🛠️ Built With
 
