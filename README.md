@@ -2,18 +2,23 @@
 
 A fully functional recreation of the Windows Vista desktop experience built with just HTML, CSS, and JavaScript.
 
+> ⚠️ **This project is a work in progress.** Features and visuals are actively being developed and refined.
+
+## ✨ About
+
+This project aims to replicate the **Windows Vista desktop environment**, complete with its signature **Aero theme** — a style known for its glossy surfaces, soft gradients, glassy transparency, and light-filled effects.
+
 ## 🚀 Features
 
 - Simulates the classic Windows Vista interface
-- Responsive to user interactions
-- Runs entirely in the browser
-- No installation required
+- Implements Aero Glass visual styles
+- Runs entirely in the browser (no installation required)
 
 ## 🖥️ Usage
 
 For the best experience:
 
-- Open in fullscreen mode
+- Open in **fullscreen mode**
 - Set browser zoom to **100%**
 
 ## 🛠️ Built With
@@ -21,6 +26,7 @@ For the best experience:
 - **HTML**
 - **CSS**
 - **JavaScript**
+
 
 ## 📸 Screenshots
 
