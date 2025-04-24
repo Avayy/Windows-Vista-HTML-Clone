@@ -30,8 +30,63 @@ const occupiedGridPositions = new Set();
 
 function initMenu() {
   vistaStart.addEventListener("click", () => {
+    windows.forEach(w => {
+      w.classList.remove('active-window');
+      updateTaskbarItemState(w.id, false);
+    });
+    
     startMenu.classList.toggle("closed");
     startMenu.style.display = startMenu.classList.contains("closed") ? "none" : "flex";
+  });
+  
+  document.addEventListener("click", (e) => {
+    if (!startMenu.classList.contains("closed") && 
+        !e.target.closest("#start_menu") && 
+        !e.target.closest("#vista_start")) {
+      startMenu.classList.add("closed");
+      startMenu.style.display = "none";
+    }
+  });
+}
+
+function initStartMenuItems() {
+  const startListItems = document.querySelectorAll('#start_list p');
+  
+  startListItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const text = item.textContent.trim().toLowerCase();
+      let windowId = null;
+      
+      // Map start menu items to window IDs
+      switch(text) {
+        case 'computer':
+          windowId = 'computer-window';
+          break;
+        case 'recycle bin':
+        case 'recycling bin':
+          windowId = 'recycle-bin-window';
+          break;
+        // Add more mappings later
+      }
+      
+      if (windowId) {
+        const win = document.getElementById(windowId);
+        if (win) {
+          win.style.display = "flex";
+          activateWindow(win);
+          addToTaskbar(win);
+          
+          if (!win.dataset.contentLoaded) {
+            const baseId = windowId.replace("-window", "");
+            loadWindowContent(win, `windows/${baseId}.html`);
+            win.dataset.contentLoaded = "true";
+          }
+          
+          startMenu.classList.add("closed");
+          startMenu.style.display = "none";
+        }
+      }
+    });
   });
 }
 
@@ -158,19 +213,122 @@ function addToTaskbar(win) {
     const targetWindow = document.getElementById(id);
     if (!targetWindow) return;
 
+    const isActive = targetWindow.classList.contains('active-window');
     const isHidden = getComputedStyle(targetWindow).display === "none";
-    targetWindow.style.display = isHidden ? "flex" : "none";
-
-    if (isHidden) {
-      targetWindow.style.zIndex = getHighestZIndex() + 1;
-      taskbarItem.classList.add("active");
+    
+    if (isActive && !isHidden) {
+      targetWindow.style.display = "none";
+      updateTaskbarItemState(id, false);
+    } else if (isHidden) {
+      targetWindow.style.display = "flex";
+      activateWindow(targetWindow);
     } else {
-      taskbarItem.classList.remove("active");
+      activateWindow(targetWindow);
     }
   });
 
+  taskbarItem.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+    
+    removeContextMenus();
+    
+    const contextMenu = document.createElement("div");
+    contextMenu.className = "context-menu";
+    contextMenu.id = "taskbar-context-menu";
+    
+    const yOffset = 150;
+    const menuTop = Math.max(10, e.clientY - yOffset);
+    
+    contextMenu.style.left = `${e.clientX}px`;
+    contextMenu.style.top = `${menuTop}px`;
+    
+    fetch('contexts/contextmenu_taskbar_item.html')
+      .then(response => response.text())
+      .then(html => {
+        contextMenu.innerHTML = html;
+        document.body.appendChild(contextMenu);
+        
+        const menuItems = contextMenu.querySelectorAll('.menu-item');
+        menuItems.forEach(item => {
+          item.addEventListener('click', () => {
+            const action = item.getAttribute('data-action');
+            const targetWindow = document.getElementById(id);
+            
+            if (targetWindow) {
+              switch(action) {
+                case 'restore':
+                  targetWindow.style.display = "flex";
+                  activateWindow(targetWindow);
+                  break;
+                case 'resize':
+                  if (targetWindow.classList.contains("maximized")) {
+                    targetWindow.style.width = targetWindow.dataset.prevWidth || "50%";
+                    targetWindow.style.height = targetWindow.dataset.prevHeight || "70%";
+                    targetWindow.style.left = "20%";
+                    targetWindow.style.top = "10%";
+                    targetWindow.classList.remove("maximized");
+                    targetWindow.style.display = "flex";
+                    activateWindow(targetWindow);
+                  }
+                  break;
+                case 'minimize':
+                  targetWindow.style.display = "none";
+                  updateTaskbarItemState(id, false);
+                  break;
+                case 'maximize':
+                  if (!targetWindow.classList.contains("maximized")) {
+                    targetWindow.dataset.prevWidth = targetWindow.style.width;
+                    targetWindow.dataset.prevHeight = targetWindow.style.height;
+                    targetWindow.style.width = "100%";
+                    targetWindow.style.height = "95%";
+                    targetWindow.style.left = "0";
+                    targetWindow.style.top = "0";
+                    targetWindow.classList.add("maximized");
+                    targetWindow.style.display = "flex";
+                    activateWindow(targetWindow);
+                  }
+                  break;
+                case 'close':
+                  targetWindow.style.display = "none";
+                  removeFromTaskbar(id);
+                  break;
+              }
+            }
+            
+            removeContextMenus();
+          });
+        });
+        
+        setTimeout(() => {
+          document.addEventListener("click", handleOutsideClick);
+          document.addEventListener("contextmenu", handleOutsideClick);
+        }, 100);
+      })
+      .catch(error => {
+        console.error('Error loading context menu:', error);
+        removeContextMenus();
+      });
+  });
+
   document.getElementById("t_programs").appendChild(taskbarItem);
+  
   taskbarItem.classList.add("active");
+}
+
+function removeContextMenus() {
+  const existingMenu = document.getElementById("taskbar-context-menu");
+  if (existingMenu) {
+    existingMenu.remove();
+  }
+  document.removeEventListener("click", handleOutsideClick);
+  document.removeEventListener("contextmenu", handleOutsideClick);
+}
+
+function handleOutsideClick(e) {
+  const contextMenu = document.getElementById("taskbar-context-menu");
+  if (contextMenu && !contextMenu.contains(e.target)) {
+    removeContextMenus();
+  }
 }
 
 function removeFromTaskbar(windowId) {
@@ -224,7 +382,7 @@ function initDragDesktop() {
       if (!win) return;
 
       win.style.display = "flex";
-      win.style.zIndex = getHighestZIndex() + 1;
+      activateWindow(win);
       addToTaskbar(win);
 
       if (!win.dataset.contentLoaded) {
@@ -254,6 +412,17 @@ function initIconSelection() {
   });
 }
 
+function activateWindow(win) {
+  windows.forEach(w => {
+    w.classList.remove('active-window');
+    updateTaskbarItemState(w.id, false);
+  });
+  
+  win.classList.add('active-window');
+  win.style.zIndex = getHighestZIndex() + 1;
+  updateTaskbarItemState(win.id, true);
+}
+
 function initDrag() {
   windows.forEach((win) => {
     const bar = win.querySelector("#topbar");
@@ -263,12 +432,16 @@ function initDrag() {
     let offsetX = 0,
       offsetY = 0;
 
+    win.addEventListener("mousedown", (e) => {
+      activateWindow(win);
+    });
+
     bar.addEventListener("mousedown", (e) => {
       if (e.target.closest(".btn")) return;
       isDragging = true;
       offsetX = e.clientX - win.offsetLeft;
       offsetY = e.clientY - win.offsetTop;
-      win.style.zIndex = getHighestZIndex() + 1;
+      activateWindow(win);
     });
 
     document.addEventListener("mousemove", (e) => {
@@ -354,6 +527,7 @@ function init() {
   initWindowControls();
   initMenu();
   initIconSelection();
+  initStartMenuItems()
 
   document.body.addEventListener(
     "click",
